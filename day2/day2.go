@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -29,11 +30,11 @@ func main() {
 		password := splitdata[2]
 		min, err := strconv.Atoi(strings.Split(splitdata[0], "-")[0])
 		if err != nil {
-			fmt.Printf("Error here %s", err)
+			log.Fatalf("Error here %s", err)
 		}
 		max, err := strconv.Atoi(strings.Split(splitdata[0], "-")[1])
 		if err != nil {
-			fmt.Printf("error here: %s", err)
+			log.Fatalf("error here: %s", err)
 		}
 
 		character := strings.Split(splitdata[1], ":")[0][0]
