@@ -21,8 +21,8 @@ func main() {
 		data = append(data, scanner.Text())
 	}
 
-	count_valid := 0
-	count_part2 := 0
+	countpart1 := 0
+	countpart2 := 0
 
 	for x := range data {
 		var splitdata = strings.Split(data[x], " ")
@@ -47,7 +47,7 @@ func main() {
 			}
 		}
 		if count >= min && count <= max {
-			count_valid++
+			countpart1++
 		}
 
 		//Part2
@@ -56,11 +56,11 @@ func main() {
 			conditional1 := password[min-1] == character
 			conditional2 := password[max-1] == character
 			if (conditional1 && !conditional2) || (conditional2 && !conditional1) {
-				count_part2++
+				countpart2++
 			}
 		}
 
 	}
-	fmt.Printf("Part1 Valid: %d, Part2 Valid: %d\n", count_valid, count_part2)
+	fmt.Printf("Part1 Valid: %d, Part2 Valid: %d\n", countpart1, countpart2)
 
 }
