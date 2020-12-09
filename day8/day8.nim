@@ -8,7 +8,10 @@ type Instruction* = object
 type CodePoint* = object 
     pc: int
     acc: int
-
+type codeRun* = object
+    queue: seq[CodePoint]
+    success: bool
+    
 var binary: seq[Instruction]
 var line: string
 var done = false
@@ -29,14 +32,16 @@ while done != true:
     else:
         done = true
 
-proc runCode(): seq[CodePoint] =
+proc runCode(): codeRun =
     done = false
     var pc = 0
     var acc = 0
+    var run: codeRun
     var queue: seq[CodePoint]
     var breakpoint = false
+    var success = false
     while done == false:
-        if(len(binary) < pc):
+        if(len(binary)-1 <= pc):
             done = true
             break
         #check for loop
@@ -60,13 +65,32 @@ proc runCode(): seq[CodePoint] =
         point.pc = pc
         point.acc = acc
         queue.add(point)
-    return queue
+    run.queue = queue
+    if pc == len(binary)-1:
+        run.success = true
+    return run
     
-var queue, breakpoint = runCode()
-
+var run = runCode()
 const position_offset = 2
-echo "Part 1: PC: ", queue[len(queue) - position_offset].pc, " ACC: ", queue[len(queue) - position_offset].acc
+echo "Part 1: PC: ", run.queue[len(run.queue) - position_offset].pc, " ACC: ", run.queue[len(run.queue) - position_offset].acc
 
-for i in 1..200:
-    echo "Previous instruction: ", i, ": ", queue[len(queue)-i], " op:", binary[queue[len(queue) - i].pc].op, " arg: ", binary[queue[len(queue) - i].pc].arg
-echo "Part 2: PC: ", queue[len(queue) - 1].pc, " ACC: ", queue[len(queue) - 1].acc
+proc resetRunCount() =
+    for i in 0..len(binary)-1:
+        binary[i].runCount = 0
+
+for i in 0..(len(binary) - 1):
+    resetRunCount()
+    if binary[i].op == 1:
+        binary[i].op = 2
+        var data = runCode()
+        if(data.success == true):
+            echo "Part 2: PC: ", data.queue[len(data.queue) - 1].pc, " ACC: ", data.queue[len(data.queue) - 1].acc
+            echo "Line: ", binary[i]
+        binary[i].op = 1
+    elif binary[i].op == 2:
+        binary[i].op = 1
+        var data = runCode()
+        if(data.success == true):
+            echo "Part 2: PC: ", data.queue[len(data.queue) - 1].pc, " ACC: ", data.queue[len(data.queue) - 1].acc
+            echo "Line: ", i, " ", binary[i]
+        binary[i].op = 2
