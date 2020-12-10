@@ -41,14 +41,11 @@ proc recurse(position: int): int =
             #found one combination
             combinations = combinations + 1
             break
-        elif count > 5:
-            #we went too far, stop here
+        elif adapters[count + position] - adapters[position] > 3:
             stop = true
-        elif adapters[count + position] - adapters[position] == 1 or adapters[count+position] - adapters[position] == 3:
-            combinations = combinations + recurse(position + count)
-            echo adapters[position],  " : ", adapters[count+position], " combinations: ", combinations
-            count = count + 1
+            break
         else:
+            combinations = combinations + recurse(position + count)
             count = count + 1
     return combinations
-echo recurse(0)
+echo "Part2 ", recurse(0)/2
