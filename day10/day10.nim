@@ -1,5 +1,5 @@
-import strutils, algorithm
-var f = open("data_test.txt")
+import strutils, algorithm, tables
+var f = open("data.txt")
 
 var line: string
 var done = false
@@ -27,9 +27,11 @@ for i in 1..len(adapters)-1:
         one_count = one_count + 1
     else:
         three_count = three_count + 1
-echo "Part1: 1: ", one_count, " 3: ", three_count, " Mult: ", one_count * three_count
+echo "Part1: 1: ", one_count, " 3: ", three_count, " Mult: ", one_count * three_count, " len: ", len(adapters)
 
 echo adapters
+
+var recurse_cache = initTable[int, int]()
 
 proc recurse(position: int): int = 
     var stop = false
@@ -45,7 +47,11 @@ proc recurse(position: int): int =
             stop = true
             break
         else:
-            combinations = combinations + recurse(position + count)
-            count = count + 1
+            if(recurse_cache.contains(position + count)):
+                combinations = combinations + recurse_cache[position+count]
+            else:
+                recurse_cache[position + count] = combinations + recurse(position + count)
+                combinations = combinations + recurse_cache[position + count]
+        count = count + 1
     return combinations
 echo "Part2 ", recurse(0)/2
