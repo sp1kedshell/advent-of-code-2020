@@ -80,9 +80,10 @@ proc check_occupied_count(table: seq[seq[int]], inputx: int, inputy: int): int =
     var neighbors = 0
     for y_offset in y_coords:
         for x_offset in x_coords:
-            if(x_offset == 0 and y_offset == 0):
-                continue
             var done = false 
+            if(x_offset == 0 and y_offset == 0):
+                done = true
+                continue
             var x = inputx
             var y = inputy
             while done == false:
@@ -94,6 +95,7 @@ proc check_occupied_count(table: seq[seq[int]], inputx: int, inputy: int): int =
                     if(table[y][x] == 2):
                         neighbors = neighbors + 1
                         done = true
+                        break
     return neighbors
 
 proc gameoflifepart2electricboogaloo(table: seq[seq[int]]): seq[seq[int]] = 
@@ -116,9 +118,18 @@ while done == false:
     var table_new = gameoflifepart2electricboogaloo(table)
     if(compareTable(table, table_new)):
         done = true
+        echo "Found duplicate table"
     table = table_new
-    echo "Table: "
-    for i in table:
-        echo i
+    echo "Table: Occupancy:"
+    for i in 0..len(table)-1:
+        var occupied_points: seq[char]
+        for point in 0..len(table[i]) - 1:
+            if(table[i][point] == 2 or table[i][point] == 0):
+                occupied_points.add(char(check_occupied_count(table, i, point)+48))
+            elif(table[i][point] == 1):
+                occupied_points.add('.')
+            #else:
+            #    occupied_points.add('L')
+        echo occupied_points
 
 echo "Part2: Occupied: ", getOccupied(table)
