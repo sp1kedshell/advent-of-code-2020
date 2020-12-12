@@ -1,5 +1,5 @@
 import strutils
-var f = open("data_test.txt")
+var f = open("data.txt")
 
 var done = false
 var line: string
@@ -91,6 +91,9 @@ proc check_occupied_count(table: seq[seq[int]], inputx: int, inputy: int): int =
                 y = y + y_offset
                 if(x >= len(table[0]) or y >= len(table) or y < 0 or x < 0):
                     done = true
+                elif(table[y][x] == 0):
+                    done = true
+                    break
                 else:
                     if(table[y][x] == 2):
                         neighbors = neighbors + 1
@@ -124,12 +127,12 @@ while done == false:
     for i in 0..len(table)-1:
         var occupied_points: seq[char]
         for point in 0..len(table[i]) - 1:
-            if(table[i][point] == 2 or table[i][point] == 0):
+            if(table[i][point] == 2):
                 occupied_points.add(char(check_occupied_count(table, i, point)+48))
             elif(table[i][point] == 1):
                 occupied_points.add('.')
-            #else:
-            #    occupied_points.add('L')
+            else:
+                occupied_points.add('L')
         echo occupied_points
 
 echo "Part2: Occupied: ", getOccupied(table)
